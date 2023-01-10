@@ -1,43 +1,55 @@
 <template>
   <div class="element-container">
     <div>
-      <el-button type="primary" @click="showCreateMdaModal = true">Create MDA</el-button>
+      <el-button type="primary" @click="showCreateLgaBudgetAmountModal = true"
+        >Create LGA Budget Amount</el-button
+      >
     </div>
     <el-table :data="filterTableData" v-loading="loadingTable" style="width: 100%">
-      <el-table-column label="MDA Name" prop="mda_name" />
+      <el-table-column label="LGA" prop="lga.lga_name" />
+      <el-table-column label="Budget Item" prop="budget_item.name" />
+      <el-table-column label="Proposed Amount" prop="proposed_amount" />
+      <el-table-column label="Revised Amount" prop="revised_amount" />
+      <el-table-column label="Actual Amount" prop="actual_amount" />
+      <el-table-column label="Approved Amount" prop="approved_amount" />
+      <el-table-column label="Year" prop="year" />
       <el-table-column align="right">
         <template #header>
           <el-input v-model="search" size="small" placeholder="Type to search" />
         </template>
         <template #default="scope">
           <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button> -->
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button
-          >
+          <el-button
+            size="small"
+            :icon="Delete"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            />
         </template>
       </el-table-column>
     </el-table>
 
-    <create-mda-modal
-      :show="showCreateMdaModal"
-      @close="showCreateMdaModal = false"
-      @refresh="loadMdas"
+    <CreateLgaBudgetAmountModal
+      :show="showCreateLgaBudgetAmountModal"
+      @close="showCreateLgaBudgetAmountModal = false"
+      @refresh="loadLGABudgetAmounts"
     />
     <!-- <edit-contractor-modal
       :show="showEditContractorModal"
       @close="showEditContractorModal = false"
       :contractor="contractorData"
-      @refresh="loadMdas"
+      @refresh="loadLGABudgetAmounts"
     /> -->
   </div>
 </template>
 
 <script setup>
-  import CreateMdaModal from './CreateMdaModal.vue';
+  import CreateLgaBudgetAmountModal from './CreateLgaBudgetAmountModal.vue';
   // import EditContractorModal from './EditContractorModal.vue';
-  import { getMdas, deleteMda } from '@/api/mda';
+  import { getAllLGABudgetAmounts, deleteLGABudgetAmount } from '@/api/lga.budget.amount';
   import { ref, onMounted } from 'vue';
-  const showCreateMdaModal = ref(false);
+  import { Delete } from '@element-plus/icons-vue';
+  const showCreateLgaBudgetAmountModal = ref(false);
   // const showEditContractorModal = ref(false);
   const tableData = ref([]);
   // const contractorData = ref(null);
@@ -56,28 +68,28 @@
   // };
   const handleDelete = async (index, row) => {
     console.log(index, row);
-    await deleteAMda(row.id);
-    await loadMdas();
+    await deleteALGABudgetAmount(row.id);
+    await loadLGABudgetAmounts();
   };
 
-  async function deleteAMda(id) {
-    await deleteMda(id);
+  async function deleteALGABudgetAmount(id) {
+    await deleteLGABudgetAmount(id);
   }
-  async function fetchMdas() {
+  async function fetchLGAs() {
     try {
       loadingTable.value = true;
-      const { data } = await getMdas();
+      const { data } = await getAllLGABudgetAmounts();
       tableData.value = data;
     } catch (e) {
     } finally {
       loadingTable.value = false;
     }
   }
-  async function loadMdas() {
-    await fetchMdas();
+  async function loadLGABudgetAmounts() {
+    await fetchLGAs();
   }
   onMounted(async () => {
-    await loadMdas();
+    await loadLGABudgetAmounts();
   });
 </script>
 

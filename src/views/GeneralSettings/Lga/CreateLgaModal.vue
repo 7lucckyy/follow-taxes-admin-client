@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="props.show" title="Create Contractor">
+  <el-dialog v-model="props.show" title="Create LGA Budget Amount">
     <template #default>
       <el-form
         ref="validateForm"
